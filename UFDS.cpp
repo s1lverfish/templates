@@ -15,9 +15,9 @@ class disjoint_sets
 private: int *rank, *p, size, *setSize, numSets;
 public:
 	disjoint_sets(int n) { size = n; numSets = n;
-		rank = (int*)malloc(n*sizeof(int)); memset(rank, 0, sizeof(rank));
-		p = (int*)malloc(n*sizeof(int)); iota(p, p+n, 0);
-		setSize = (int*)malloc(n*sizeof(int)); for(int i=0; i < n; i++) setSize[i] = 1;}
+		rank = new int[n]; memset(rank, 0, sizeof(rank));
+		p = new int[n]; iota(p, p+n, 0);
+		setSize = new int[n]; for(int i=0; i < n; i++) setSize[i] = 1;}
 
 	void printParents(){ for(int i = 0; i < size; i++) cout << i << " : " << p[i] << endl; }
 	void printRank(){ for(int i = 0; i < size; i++) cout << i << " : " << rank[i] << endl; }
