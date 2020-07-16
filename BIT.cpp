@@ -11,14 +11,12 @@ using namespace std;
 
 const int INF = 1e9 + 7;
 
-class BIT{
-private:
-	int sz, *table;
-public:
-	BIT(int size){
+struct BIT{
+	int sz;
+	vector<int> table;
+	void init(int size){
 		size++;
-		table = new int[size];
-		memset(table, sizeof(table), 0);
+		table.assign(size, 0);
 		sz = size;
 	}
 
@@ -50,7 +48,8 @@ int main(void)
 	FAST
 	
 	int v[] = {1, 2, 3 ,4 ,5 , 6, 7, 8, 9 ,10};
-	BIT ft(10);
+	BIT ft;
+	ft.init(10);
 
 	for(int i = 1; i < 11; i++) ft.update(i, v[i-1]); 
 

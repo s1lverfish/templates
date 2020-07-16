@@ -10,14 +10,16 @@ using namespace std;
 
 const int INF = 1e9 + 7;
 
-class disjoint_sets
+struct dsu 
 {
-private: int *rank, *p, size, *setSize, numSets;
-public:
-	disjoint_sets(int n) { size = n; numSets = n;
-		rank = new int[n]; memset(rank, 0, sizeof(rank));
-		p = new int[n]; iota(p, p+n, 0);
-		setSize = new int[n]; for(int i=0; i < n; i++) setSize[i] = 1;}
+	int size, numSets;
+	vector<int> rank, p, setSize;
+
+	void init(int n) { size = n; numSets = n;
+		rank.assign(n, 0);
+		p.resize(n); iota(p.begin(), p.end(), 0);
+		setSize.assign(n, 1);
+	}
 
 	void printParents(){ for(int i = 0; i < size; i++) cout << i << " : " << p[i] << endl; }
 	void printRank(){ for(int i = 0; i < size; i++) cout << i << " : " << rank[i] << endl; }
@@ -47,7 +49,8 @@ int main(void)
 {
 	FAST
 	
-	disjoint_sets s(8);
+	dsu s;
+	s.init(8);
 	s.unionSet(0,1);
 	s.unionSet(2,3);
 	s.unionSet(4,5);
@@ -57,7 +60,7 @@ int main(void)
 	s.unionSet(6,2);
 
 	s.printRank();
-	cout << s.sizeOfSet(2) << endl;
+	cout << s.sizeOfSet(0) << endl;
 
 	return 0;
 }
