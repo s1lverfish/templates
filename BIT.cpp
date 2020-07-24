@@ -29,7 +29,6 @@ struct BIT{
 	}
 
 	int prefSum(int i){
-
 		int sum = 0;
 		while(i){
 			sum += table[i];
@@ -64,11 +63,6 @@ int main(void)
 	ft.update(i, (3 - ft.rangeSum(i-1, i)));
 	cout << ft.rangeSum(i-1, i) << endl;
 	cout << ft.prefSum(10) << endl;
-
-
-
-
-	
 
 	return 0;
 }
