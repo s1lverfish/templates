@@ -15,11 +15,25 @@ using namespace std;
 #  define LOG(x) ((void)0)
 #endif
 
-const int INF = 1e9 + 7;
+const int INF = 1e9;
 
+int n, a, b;
 
 int main(void)
 {
 	FAST;
+	cin >> n >> a >> b;
+	int cnt = 1;
+	int timer = 1; 
+	while(cnt < n){
+		if(timer % a == 0) cnt++;
+		if(timer % b == 0) cnt++;
+		timer++;
+	}
+	timer--;
+
+	cout << timer + min(a,b) << '\n';
+
+
 	return 0;
 }

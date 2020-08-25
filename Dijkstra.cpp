@@ -1,4 +1,3 @@
-//g++ -Wshadow -Wall -o A.cpp a -g -fsanitize=address -fsanitize=undefined 
 #include <bits/stdc++.h>
 
 #define ull unsigned long long
@@ -16,7 +15,9 @@ using namespace std;
 #  define LOG(x) ((void)0)
 #endif
 
-const ll INF = 1e18 + 7;
+const int INF = 1e9 + 7;
+
+
 const int MxN = 3e5 + 10;
 
 vector<pair<int, pair<int, int>>> g[MxN];

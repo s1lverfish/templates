@@ -17,9 +17,14 @@ using namespace std;
 
 const int INF = 1e9 + 7;
 
+#define rnd rand() % 10 + 1
 
-int main(void)
+int main(int args, char** argv)
 {
 	FAST;
+	srand(atoi(argv[1]));
+	int n = 200000000;
+	cout << n << ' ' << (rnd) << ' '<< (rnd) << '\n';
+
 	return 0;
 }

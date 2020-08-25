@@ -1,4 +1,3 @@
-//g++ -Wshadow -Wall -o A.cpp a -g -fsanitize=address -fsanitize=undefined 
 #include <bits/stdc++.h>
 
 #define ull unsigned long long
