@@ -28,7 +28,13 @@ tem T> op (const T&) { return *this; }
 #endif 
 };
 
-#define expand(...) " [ " << #__VA_ARGS__ << " : " << (__VA_ARGS__) << " ]"
+string _ARR_(int* arr, int sz){
+	string ret = "{ " + to_string(arr[0]); 
+	for(int i = 1; i < sz; i++) ret += " , " +  to_string(arr[i]);
+	ret += " }"; return ret;
+}
+
+#define exp(...) " [ " << #__VA_ARGS__ << " : " << (__VA_ARGS__) << " ]"
 /*</DEBUG>*/
 
 typedef long long ll;
@@ -44,5 +50,6 @@ const int INF = 1e9 + 7;
 int main(void)
 {
 	FAST;
+
 	return 0;
 }
