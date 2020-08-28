@@ -1,161 +1,167 @@
 #include <bits/stdc++.h>
-
-#define ull unsigned long long
-#define ll long long
-#define pb push_back
-#define pii pair<int, int>
-#define FAST ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0)
-#define TC int tc; cin >> tc; while(tc--)
-
 using namespace std;
 
-#ifndef ONLINE_JUDGE
-#  define LOG(x) (cerr << #x << " = " << (x) << endl)
+/*<DEBUG>*/
+#define tem template <typename 
+#define can_shift(_X_, ...) enable_if_t<sizeof test<_X_>(0) __VA_ARGS__ 8, debug&> operator<<(T i)
+#define _op debug& operator<<
+tem C > auto test(C *x) -> decltype(cerr << *x, 0LL);
+tem C > char test(...);
+tem C > struct itr{C begin, end; };
+tem C > itr<C> get_range(C b, C e) { return itr<C>{b, e}; };
+struct debug{
+#ifdef _LOCAL
+	~debug(){ cerr << endl; }
+	tem T > can_shift(T, ==){ cerr << boolalpha << i; return *this; }
+	tem T> can_shift(T, !=){ return *this << get_range(begin(i), end(i)); }
+	tem T, typename U > _op (pair<T, U> i){ 
+		return *this << "< " << i.first << " , " << i.second << " >"; }
+	tem T> _op (itr<T> i){
+		*this <<  "{ ";
+		for(auto it = i.begin; it != i.end; it++){
+			*this << " , " + (it==i.begin?2:0) << *it;
+		}
+		return *this << " }";
+	}
 #else
-#  define LOG(x) ((void)0)
-#endif
+tem T> _op (const T&) { return *this; }
+#endif 
+};
 
-const int INF = 1e9 + 7;
+string _ARR_(int* arr, int sz){
+	string ret = "{ " + to_string(arr[0]); 
+	for(int i = 1; i < sz; i++) ret += " , " +  to_string(arr[i]);
+	ret += " }"; return ret;
+}
+
+#define exp(...) " [ " << #__VA_ARGS__ << " : " << (__VA_ARGS__) << " ]"
+/*</DEBUG>*/
+
+typedef long long ll;
+typedef unsigned long long ull;
+typedef pair<int, int> pii;
+
+#define pb push_back
+#define FAST ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0)
+#define TC int __TC__; cin >> __TC__; while(__TC__--)
+
+const ll INF = 1e18 + 7;
 
 struct item{
-	ll mx;
+	ll sum;
 };
 
 struct SegTree{
 	int sz, n;
 	vector<item> values;
+	vector<ll> op;
 
 	//-----<Set up the neutral element, single, and merge for current item>-----//
+	
 	item NEUTRAL_ELEMENT = {0};
+	ll NO_OP = 0;
 
-	item merge(item a, item b){
-		return {max(a.mx, b.mx)};
+
+	void do_mod_op(ll &a, ll &b, ll len){
+		return;
 	}
 
-	item single(int v){
-		return {v};
+	void prop(int x, int lx, int rx){
+		return;
 	}
+
+	void merge(int x, int lx, int rx){
+		return;
+	}
+
+
 	//-----</Set up the neutral element, single, and merge for current item>-----//
 
 	void init(int n){
 		sz = 1;
 		while(sz < n) sz*=2;
-		values.resize(sz*2);
+		values.assign(sz*2, NEUTRAL_ELEMENT);
+		op.assign(sz*2, NO_OP);
 		return;
 	}
 
-	void build(vector<int> &a, int x, int lx, int rx){
-		
-		if(rx-lx == 1){
-			if(lx < n) values[x] = single(a[lx]);
-			return;
-		}
-	
-		int m = lx + (rx - lx)/2;
-		build(a, 2*x + 1, lx, m);
-		build(a, 2*x + 2, m, rx);
-
-		//-----<Do associative operation>-----//
-		values[x] = merge(values[2*x + 1], values[2*x + 2]);
-		//-----</Do associative operation>-----//
-	}
-
-
-	void build(vector<int> &a){
-		n = a.size();
-		build(a, 0, 0, sz);
-		return;
-	}
-
-	void set(int i, int v, int x, int lx, int rx){
-
-		if(rx - lx == 1){
-			values[x] = single(v); //base case, set bottom level
+	void print_tree(int x, int lx, int rx){
+		int len = (rx - lx)/2;
+		if(rx - lx == 1) {
+			do_mod_op(values[x].sum, op[x], len);
+			cout << values[x].sum << ' ';
 			return;
 		}
 
-		int m = lx + (rx - lx)/2;
-
-		if(m > i) set(i, v, 2*x + 1, lx, m); //go left
-		else set(i, v, 2*x + 2, m, rx); //go right
-
-		//-----<Do associative operation>-----//
-		values[x] = merge(values[x*2 + 1], values[x*2 + 2]);
-		//-----</Do associative operation>-----//
-	}
-
-	void set(int i, int v){
-		set(i, v, 0, 0, sz);
+		prop(x, lx, rx);
+		int m = lx + (rx - lx) /2;
+		print_tree(2*x + 1, lx, m);
+		print_tree(2*x + 2, m, rx);
+		merge(x, lx, rx);
 		return;
 	}
 
-	item calc_range(int l, int r, int x, int lx, int rx){
-
-		//Case 1: segment outside l, r
-		if(lx >= r || rx <= l) return NEUTRAL_ELEMENT; //Neutral Element
-		//Case 2: segment completely inside l, r
-		if(lx >= l && rx <= r) return values[x];
-		//Case 3: segment partly inside, partly outside l, r
-		
-		int m = lx + (rx - lx) / 2;
-
-		item left = calc_range(l, r, 2*x + 1, lx, m);
-		item right = calc_range(l, r, 2*x + 2, m, rx);
-
-		//-----<Do associative operation>-----//
-		return merge(left, right);
-		//-----</Do associative operation>-----//
+	void print_tree() {
+		print_tree(0, 0, sz);
+		return;
 	}
 
-	item calc_range(int l, int r){
+	void modify_range(int l, int r, int x, int lx, int rx){
+		prop(x, lx, rx);
+
+		if(r <= lx || l >= rx) return;
+
+		if(lx >= l && rx <= r){
+			op[x] = 1;
+			do_mod_op(values[x].sum, op[x], rx-lx);
+			return;
+		}
+
+		int m = lx + (rx - lx)/2;
+		modify_range(l, r, 2*x + 1, lx, m);
+		modify_range(l, r, 2*x + 2, m, rx);
+		merge(x, lx, rx);
+		return;
+	}
+
+	void modify_range(int l, int r){
+		modify_range(l, r, 0, 0, sz);
+		return;
+	}
+
+	ll calc_range(int l, int r, int x, int lx, int rx){
+		prop(x, lx, rx);
+
+		if(r <= lx || l >= rx) return NEUTRAL_ELEMENT.sum;
+
+		if(lx >= l && rx <= r){
+			do_mod_op(values[x].sum, op[x], rx-lx);
+			return values[x].sum;
+		}
+
+		int m = lx + (rx - lx)/2;
+		ll left = calc_range(l, r, 2*x + 1, lx, m);
+		ll right = calc_range(l, r, 2*x + 2, m, rx);
+		merge(x, lx, rx);
+		return left + right;
+	}
+
+
+	ll calc_range(int l, int r){
 		return calc_range(l, r, 0, 0, sz);
-	}
-
-	int pos_value(int v, int l, int x, int lx, int rx){
-
-		if(values[x].mx < v) return -1; //if item isn't in this subtree
-		if(rx <= l) return -1; //if item is left of this subtree
-
-		if(rx - lx == 1) return lx; //if leftmost item is found
-
-		int m = lx + (rx - lx) / 2;
-		int res = pos_value(v, l, 2*x + 1, lx, m); //go left
-		if(res == -1){
-			res  = pos_value(v, l, 2*x + 2, m, rx); //if stuck, go right
-		}
-
-		return res;
-	}
-
-
-	int pos_value(int v, int l){
-		return pos_value(v, l, 0, 0, sz);
 	}
 };
 
 
 int main(void)
 { 
-	FAST
+	FAST;
 	int n, m; cin >> n >> m;
-	vector<int> a(n);
 
 	SegTree st;
 	st.init(n);
 
-	for(int &t : a) cin >> t;
-	st.build(a);
-
-	while(m--){
-		int q; cin >> q;
-		if(q == 1){
-			int i, v; cin >> i >> v;
-			st.set(i, v);
-		}else{
-			int k, l; cin >> k >> l;
-			cout << st.pos_value(k, l) << '\n';
-		}
-	}
 
 	return 0;
 }
+
