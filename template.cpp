@@ -4,7 +4,7 @@ using namespace std;
 /*<DEBUG>*/
 #define tem template <typename 
 #define can_shift(_X_, ...) enable_if_t<sizeof test<_X_>(0) __VA_ARGS__ 8, debug&> operator<<(T i)
-#define op debug& operator<<
+#define _op debug& operator<<
 tem C > auto test(C *x) -> decltype(cerr << *x, 0LL);
 tem C > char test(...);
 tem C > struct itr{C begin, end; };
@@ -14,9 +14,9 @@ struct debug{
 	~debug(){ cerr << endl; }
 	tem T > can_shift(T, ==){ cerr << boolalpha << i; return *this; }
 	tem T> can_shift(T, !=){ return *this << get_range(begin(i), end(i)); }
-	tem T, typename U > op (pair<T, U> i){ 
+	tem T, typename U > _op (pair<T, U> i){ 
 		return *this << "< " << i.first << " , " << i.second << " >"; }
-	tem T> op (itr<T> i){
+	tem T> _op (itr<T> i){
 		*this <<  "{ ";
 		for(auto it = i.begin; it != i.end; it++){
 			*this << " , " + (it==i.begin?2:0) << *it;
@@ -24,7 +24,7 @@ struct debug{
 		return *this << " }";
 	}
 #else
-tem T> op (const T&) { return *this; }
+tem T> _op (const T&) { return *this; }
 #endif 
 };
 
@@ -37,8 +37,9 @@ string _ARR_(int* arr, int sz){
 #define exp(...) " [ " << #__VA_ARGS__ << " : " << (__VA_ARGS__) << " ]"
 /*</DEBUG>*/
 
-typedef long long ll;
-typedef unsigned long long ull;
+typedef int64_t ll;
+typedef uint64_t ull;
+typedef uint32_t uint;
 typedef pair<int, int> pii;
 
 #define pb push_back
