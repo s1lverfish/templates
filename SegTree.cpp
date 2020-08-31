@@ -37,16 +37,23 @@ string _ARR_(int* arr, int sz){
 #define exp(...) " [ " << #__VA_ARGS__ << " : " << (__VA_ARGS__) << " ]"
 /*</DEBUG>*/
 
-typedef long long ll;
-typedef unsigned long long ull;
+typedef int64_t ll;
+typedef uint64_t ull;
+typedef uint32_t uint;
 typedef pair<int, int> pii;
 
 #define pb push_back
 #define FAST ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0)
 #define TC int __TC__; cin >> __TC__; while(__TC__--)
 
-const ll INF = 1e18 + 7;
+const int INF = 1e9 + 7;
 
+int main(void)
+{
+	FAST;
+
+	return 0;
+}
 struct item{
 	ll sum;
 };
