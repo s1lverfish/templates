@@ -48,12 +48,6 @@ typedef pair<int, int> pii;
 
 const int INF = 1e9 + 7;
 
-int main(void)
-{
-	FAST;
-
-	return 0;
-}
 struct item{
 	ll sum;
 };
