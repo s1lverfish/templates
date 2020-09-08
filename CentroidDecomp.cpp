@@ -47,42 +47,82 @@ typedef pair<int, int> pii;
 #define TC int __TC__; cin >> __TC__; while(__TC__--)
 
 const int INF = 1e9 + 7;
-const int MxN = 2e5 + 100;
+const int MxN = 1e5 + 100;
 
-struct {
-    int p[MxN], sz[MxN], cmp;
+struct edge{
+	int to, c;
+};
 
-    void init(int n) {
-        iota(p, p + n, 0);
-        fill(sz, sz + n, 1);
-        cmp = n;
-    }
+vector<edge> adj[MxN];
+int parent[MxN], blocked[MxN], sz[MxN];
 
-    int operator[](int u) {
-        return (p[u] == u ? u : p[u] = (*this)[p[u]]);
-    }
+int calcSum(int v, int p){
+	sz[v] = 1;
+	parent[v] = p;
 
-    void operator()(int u, int v) {
-        u = (*this)[u];
-        v = (*this)[v];
-        if (u == v) return;
-        if (sz[u] < sz[v]) swap(u, v);
-        p[v] = u;
-        sz[u] += sz[v];
-        cmp--;
-    }
-} dsu;
+	for(auto e : adj[v]){
+		if(e.to != p && !blocked[e.to]){
+			sz[v] += calcSum(e.to, v);
+		}
+	}
+	return sz[v];
+}
+
+ll solveTree(int root, int compSize){ //finds answer of paths going through root
+	return 0;
+}
+
+ll findAns(int entryPoint){
+	calcSum(entryPoint, entryPoint);
+	int best = sz[entryPoint];
+	int centroid = entryPoint;
+
+	queue<int> q;
+	q.push(entryPoint);
+	int compSize = 0;
+
+	while(!q.empty()){
+		int cur = q.front();
+		compSize++;
+		q.pop();
+		int mx = sz[entryPoint] - sz[cur];
+		for(auto e : adj[cur]){
+			if(e.to != parent[cur] && !blocked[e.to]){
+				q.push(e.to);
+				mx = max(mx, sz[e.to]);
+			}
+		}
+		if(mx < best){
+			best = mx;
+			centroid = cur;
+		}
+	}
+	
+	//debug() << exp(entryPoint+1) << exp(centroid+1);
+
+	ll ans = solveTree(centroid, compSize);
+	blocked[centroid] = 1;
+	for(auto e : adj[centroid]){
+		if(!blocked[e.to]) ans += findAns(e.to);
+	}
+
+	return ans;
+}
 
 int main(void)
 {
 	FAST;
-	dsu.init(10);
-	dsu(0, 1);
-	dsu(1, 2);
-	dsu(1, 2);
-	cout << dsu[0] << endl;
-	cout << dsu[1] << endl;
-	cout << dsu.sz[dsu[0]] << endl;
+	memset(blocked, 0, sizeof blocked);
+	int n; cin >> n;
+	for(int i = 1; i < n; i++){
+		int u, v, c; cin >> u >> v >> c;
+		u--; v--; c*=2; c--;
+		adj[u].pb({v, c});
+		adj[v].pb({u, c});
+	}
+	ll ans = findAns(0);
+	//ll ans = solveTree(4, 7);
 
+	cout << ans << '\n';
 	return 0;
 }
