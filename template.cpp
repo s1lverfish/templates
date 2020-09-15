@@ -37,9 +37,9 @@ string _ARR_(int* arr, int sz){
 #define exp(...) " [ " << #__VA_ARGS__ << " : " << (__VA_ARGS__) << " ]"
 /*</DEBUG>*/
 
-typedef int64_t ll;
-typedef uint64_t ull;
-typedef uint32_t uint;
+typedef long long ll;
+typedef unsigned long long ull;
+typedef unsigned int uint;
 typedef pair<int, int> pii;
 
 #define pb push_back
