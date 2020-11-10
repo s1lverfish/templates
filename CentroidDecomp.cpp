@@ -49,34 +49,33 @@ typedef pair<int, int> pii;
 const int INF = 1e9 + 7;
 const int MxN = 1e5 + 100;
 
-struct edge{
-	int to, c;
-};
-
-vector<edge> adj[MxN];
+vector<int> adj[MxN];
 int parent[MxN], blocked[MxN], sz[MxN];
+
+//find answer for paths going through root
+ll solveTree(int root, int compSize){
+	return 0;
+}
 
 int calcSum(int v, int p){
 	sz[v] = 1;
 	parent[v] = p;
 
-	for(auto e : adj[v]){
-		if(e.to != p && !blocked[e.to]){
-			sz[v] += calcSum(e.to, v);
+	for(int u : adj[v]){
+		if(u != p && !blocked[u]){
+			sz[v] += calcSum(u, v);
 		}
 	}
 	return sz[v];
 }
 
-ll solveTree(int root, int compSize){ //finds answer of paths going through root
-	return 0;
-}
-
 ll findAns(int entryPoint){
+	//calc subtree sizes
 	calcSum(entryPoint, entryPoint);
 	int best = sz[entryPoint];
 	int centroid = entryPoint;
 
+	//find centroid and component size
 	queue<int> q;
 	q.push(entryPoint);
 	int compSize = 0;
@@ -86,10 +85,10 @@ ll findAns(int entryPoint){
 		compSize++;
 		q.pop();
 		int mx = sz[entryPoint] - sz[cur];
-		for(auto e : adj[cur]){
-			if(e.to != parent[cur] && !blocked[e.to]){
-				q.push(e.to);
-				mx = max(mx, sz[e.to]);
+		for(int u : adj[cur]){
+			if(u != parent[cur] && !blocked[u]){
+				q.push(u);
+				mx = max(mx, sz[u]);
 			}
 		}
 		if(mx < best){
@@ -98,12 +97,13 @@ ll findAns(int entryPoint){
 		}
 	}
 	
-	//debug() << exp(entryPoint+1) << exp(centroid+1);
-
+	//solve tree for paths through centroid
 	ll ans = solveTree(centroid, compSize);
 	blocked[centroid] = 1;
-	for(auto e : adj[centroid]){
-		if(!blocked[e.to]) ans += findAns(e.to);
+
+	//recurse
+	for(int u : adj[centroid]){
+		if(!blocked[u]) ans += findAns(u);
 	}
 
 	return ans;
@@ -113,13 +113,11 @@ int main(void)
 {
 	FAST;
 	memset(blocked, 0, sizeof blocked);
+
 	int n; cin >> n;
 	for(int i = 1; i < n; i++){
-		int u, v, c; cin >> u >> v >> c;
-		u--; v--; c*=2; c--;
-		adj[u].pb({v, c});
-		adj[v].pb({u, c});
 	}
+
 	ll ans = findAns(0);
 	//ll ans = solveTree(4, 7);
 
